@@ -8,7 +8,7 @@ class Settings(BaseSettings):
   POSTGRES_SERVER: str = "localhost"
   POSTGRES_USER: str = "fastapi"
   POSTGRES_PASSWORD: str = "123123"
-  POSTGRES_DB: str = "minca"
+  POSTGRES_DB: str = "fast"
   SQLALCHEMY_DATABASE_URI: Optional[str] = f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER}/{POSTGRES_DB}"
   class Config:
       case_sensitive = True
