@@ -5,5 +5,5 @@ class Place(Base):
    __tablename__ = "places"
    id = Column(Integer, primary_key=True, index=True)
    name = Column(String, index=True)
-   description = Column(String, index=True)
+   precio = Column(Integer)
    image = Column(String )
