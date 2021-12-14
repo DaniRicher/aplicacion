@@ -1,6 +1,6 @@
 from typing import Generator, Optional
 from sqlalchemy.orm import Session
-from app.database.session import SessionLocal
+from app.database.sessions import SessionLocal
 
 from fastapi import Depends, HTTPException, status
 from jose import jwt, JWTError
