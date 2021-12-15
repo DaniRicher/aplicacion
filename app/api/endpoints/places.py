@@ -18,7 +18,7 @@ def create_item(*,db: Session = Depends(deps.get_db),place_in: place.PlaceCreate
    return place
 
 @router.put("/places/{id}", response_model=place.Place)
-def update_place(*,db: Session = Depends(deps.get_db),id: int,place_in: place.PlaceUpdate,) -> Any:
+def update_place(*,db: Session = Depends(deps.get_db),id: int,place_in: place.PlaceUpdate,current_user: User = Depends(deps.get_current_user)) -> Any:
   
    placeInDB = crud_place.get(db=db, place_id=id)
    if not placeInDB:
@@ -36,7 +36,7 @@ def read_place(*,db: Session = Depends(deps.get_db),id: int,) -> Any:
    return place
 
 @router.delete("/places/{id}", response_model=place.Place)
-def delete_item(*,db: Session = Depends(deps.get_db),id: int,) -> Any:
+def delete_item(*,db: Session = Depends(deps.get_db),id: int,current_user: User = Depends(deps.get_current_user)) -> Any:
  
    place = crud_place.get(db=db, place_id=id)
    if not place:
