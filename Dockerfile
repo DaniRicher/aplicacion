@@ -1,22 +1,25 @@
-FROM python:3.9.7-alpine
+FROM tiangolo/uvicorn-gunicorn-fastapi:python3.9
 
-WORKDIR /usr/src/app
-
+# Set environment varibles
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-COPY poetry.lock /usr/src/app
-COPY pyproject.toml /usr/src/app
+WORKDIR /app/
 
-RUN set -eux \
-    && apk add --no-cache --virtual .build-deps build-base \
-    libressl-dev libffi-dev gcc musl-dev python3-dev \
-    && pip3 install --upgrade pip \
-    && pip3 install poetry && poetry config virtualenvs.create false \
-    && poetry install --no-dev
+# Install Poetry
+RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | POETRY_HOME=/opt/poetry python && \
+    cd /usr/local/bin && \
+    ln -s /opt/poetry/bin/poetry && \
+    poetry config virtualenvs.create false
 
+# Copy poetry.lock* in case it doesn't exist in the repo
+COPY ./pyproject.toml ./poetry.lock* /app/
 
-RUN poetry config virtualenvs.create false && poetry install
+ARG ENVIRONMENT=test
+RUN bash -c "if [ $ENVIRONMENT == "dev" ] || [ $ENVIRONMENT == "prod" ] ; then poetry install --no-root ; else poetry install --no-root --no-dev ; fi"
 
-COPY . /usr/src/app   
-CMD ["uvicorn","app.main:app","--reload","--workers","1","--host","0.0.0.0","--port","8000"]
+COPY . /app/
+
+COPY ./startup.sh /app/
+
+RUN chmod +x /app/startup.sh
